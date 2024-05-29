@@ -22,6 +22,7 @@ class User(AbstractUser):
             self.full_name=email_username
         if self.username=="" or self.username == None:
             self.username=email_username
+        self.set_password(self.password)
         super(User,self).save(*args,**kwargs)
         
         

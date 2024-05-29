@@ -60,7 +60,7 @@ export const setUser = async () => {
     const refresh_token =Cookie.get('refresh_token');
 
     if (!access_token || !refresh_token){
-        alert("Tokens does not exists");
+        //alert("Tokens does not exists");
         return;
     }
 
