@@ -1,10 +1,32 @@
+import { login } from '../../utils/auth'  
+import apiInstance from '../../utils/axios' 
+import { useState,useEffect } from 'react'    
 import React from 'react'
 import BaseHeader from '../partials/BaseHeader'
 import BaseFooter from '../partials/BaseFooter'
-import { Link } from 'react-router-dom'
-
+import { Link,useNavigate } from 'react-router-dom'
 
 function Login() {
+  const[email,setEmail]=useState("");
+  const[password,setPassword]=useState("");
+  const [isLoading,setIsLoading]=useState(false);
+
+
+  const navigate=useNavigate()
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    const {error} =await login(email,password);
+    if (error){
+      setIsLoading(false);
+      alert(error)
+    }else{  
+        navigate('/');
+        setIsLoading(false);
+    }
+
+  } 
   return (
     <>
       <BaseHeader />
@@ -24,7 +46,7 @@ function Login() {
                   </span>
                 </div>
                 {/* Form */}
-                <form className="needs-validation" noValidate="">
+                <form className="needs-validation" noValidate="" onSubmit={handleSubmit}>
                   {/* Username */}
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">
@@ -37,6 +59,7 @@ function Login() {
                       name="email"
                       placeholder="johndoe@gmail.com"
                       required=""
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                     <div className="invalid-feedback">
                       Please enter valid username.
@@ -54,6 +77,7 @@ function Login() {
                       name="password"
                       placeholder="**************"
                       required=""
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                     <div className="invalid-feedback">
                       Please enter valid password.
@@ -81,9 +105,16 @@ function Login() {
                   </div>
                   <div>
                     <div className="d-grid">
-                      <button type="submit" className="btn btn-primary">
-                        Sign in <i className='fas fa-sign-in-alt'></i>
+                    {isLoading === true && (
+                      <button disabled type="submit" className="btn btn-primary">
+                        Processing  <i className='fas fa-spinner fa-spin'></i>
                       </button>
+                      )}
+                      {isLoading === false && (
+                      <button type="submit" className="btn btn-primary">
+                        Sign In <i className='fas fa-user-plus'></i>
+                      </button>
+                      )}
                     </div>
                   </div>
                 </form>

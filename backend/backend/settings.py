@@ -254,7 +254,6 @@ SIMPLE_JWT = {
 }
 
 
-CORS_ALLOW_ALL_ORIGINS = True
 
 
 REST_FRAMEWORK = {
@@ -273,3 +272,6 @@ EMAIL_PORT = 587  # Gmail SMTP port for TLS
 EMAIL_HOST_USER = 'rakhavandaranharieesh@gmail.com'  # Your Gmail email address
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  # Your Gmail password or app-specific password
 EMAIL_USE_TLS = True  # Enable TLS encryption
+
+
+CORS_ALLOW_ALL_ORIGINS = True

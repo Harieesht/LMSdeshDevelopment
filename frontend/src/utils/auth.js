@@ -31,7 +31,7 @@ export const login = async (email,password) => {
 
 export const register = async (full_name,email,password,password2) => {
     try {
-        const {data} = await axios.post('user/register',{
+        const {data} = await axios.post('user/register/',{
             full_name,email,password,password2
         });
         await login(email,password);
@@ -40,7 +40,7 @@ export const register = async (full_name,email,password,password2) => {
     } catch (error) {
         return {
             data:null,
-            error:error.response.data?.detail || "Something went wrong",
+            error:error.response.data.email || "Something went wrong",
         }
         
     }

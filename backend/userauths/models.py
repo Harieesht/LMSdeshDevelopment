@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 class User(AbstractUser):
     username=models.CharField(unique=True,max_length=200)
     email=models.EmailField(unique=True)
-    full_name=models.CharField(unique=True,max_length=200)
+    full_name=models.CharField(max_length=200)
     otp=models.CharField(unique=True,max_length=200,null=True,blank=True)
     refresh_token=models.CharField(max_length=300,null=True,blank=True)
     
