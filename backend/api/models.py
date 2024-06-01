@@ -1,6 +1,8 @@
 from django.db import models
 from userauths.models import User,Profile
 from django.utils.text import slugify
+
+
 class Teacher(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     image=models.FileField(upload_to='course-file',blank=True,null=True,default="default.jpg")
@@ -35,9 +37,9 @@ class Category(models.Model):
         
     def __str__(self):
         self.title
-    
-    def course(self):
-        return Course.objects.filter(Category=self).count()
+
+    def course_count(self):
+        return Course.objects.filter(category=self).count()
     
     def save(self,*args,**kwargs):
         if self.slug == "" or self.slug == None:
@@ -48,7 +50,7 @@ class Category(models.Model):
         
 class Course(models.Model):
     category=models.ForeignKey(Category,on_delete=models.SET_NULL,null=True,blank=True)
-    teacher=models.ForeignKey(Teacher,)
+    teacher=models.ForeignKey(Teacher,on_delete=models.CASCADE)
             
     
     
