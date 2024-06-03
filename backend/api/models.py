@@ -1,6 +1,38 @@
 from django.db import models
 from userauths.models import User,Profile
 from django.utils.text import slugify
+from shortuuid.django_fields import ShortUUIDField
+from django.utils import timezone
+
+
+LANGUAGE= (
+    ["English","English"],
+    ["Tamil","Tamil"],
+    ["Malayalam","Malayalam"],
+)
+
+LEVEL=(
+    ["BEGINNER","BEGINNER"],
+    ["INTERMEDIATE","INTERMEDIATE"],
+    ["ADVANCED","ADVANCED"],
+)
+
+TEACHER_STATUS=(
+    ["DRAFT","DRAFT"],
+    ["DISABLED","DISABLED"],
+    ["PUBLISHED","PUBLISHED"],
+)
+
+PLATFORM_STATUS=(
+    ["REVIEW","REVIEW"],
+    ["DISABLED","DISABLED"],
+    ["REJECTED","REJECTED"],
+    ["DRAFT","DRAFT"],
+    ["PUBLISHED","PUBLISHED"],
+)
+
+
+
 
 
 class Teacher(models.Model):
@@ -51,6 +83,30 @@ class Category(models.Model):
 class Course(models.Model):
     category=models.ForeignKey(Category,on_delete=models.SET_NULL,null=True,blank=True)
     teacher=models.ForeignKey(Teacher,on_delete=models.CASCADE)
+    file=models.FileField(upload_to='course-file',blank=True,null=True)
+    image=models.FileField(upload_to='course-file',blank=True,null=True)
+    title = models.CharField(max_length=200)
+    description=models.TextField(null=True,blank=True)
+    price=models.DecimalField(max_digits=12,decimal_places=2,default=0.00)
+    language=models.CharField(choices=LANGUAGE,default='English',max_length=200)
+    level=models.CharField(choices=LEVEL,default='BEGINNER',max_length=100)
+    platform_status=models.CharField(choices=PLATFORM_STATUS,default='PUBLISHED',max_length=100)
+    teacher_course_status=models.CharField(choices=TEACHER_STATUS,default='PUBLISHED',max_length=100)    
+    featured=models.BooleanField(default=False)
+    course_id = ShortUUIDField(unique=True,length=6,max_length=20,alphabet='1234567890')
+    slug=models.SlugField(unique=True,null=True,blank=True)
+    date=models.DateTimeField(default=timezone.now)
+    
+    def  __str__(self):
+        return self.title
+    
+    
+    def save(self,*args,**kwargs):
+        if self.slug == "" or self.slug == None:
+            self.slug= slugify(self.title)
+        
+        super(Course,self).save(*args,**kwargs)
+    
             
     
     

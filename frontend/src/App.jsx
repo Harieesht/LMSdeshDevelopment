@@ -3,6 +3,8 @@ import MainWrapper from './layouts/MainWrapper'
 import PrivateRoute from './layouts/PrivateRoute'
 import Register from '../src/views/auth/Register'
 import Login from '../src/views/auth/Login'
+import Logout from './views/auth/Logout'
+import ForgotPassword from './views/auth/ForgotPassword'
 
 
 
@@ -13,6 +15,8 @@ function App() {
         <Routes>
           <Route path="/register/"  element={<Register />}  />
           <Route path="/login/"  element={<Login />}  />
+          <Route path="/logout/"  element={<Logout />}  />
+          <Route path="/forget-password/"  element={<ForgotPassword />}  />
         </Routes>
       </MainWrapper>
     </BrowserRouter>

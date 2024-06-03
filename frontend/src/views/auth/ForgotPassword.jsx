@@ -1,3 +1,5 @@
+import { useState,useEffect } from 'react'
+import apiInstance from '../../utils/axios'
 import React from 'react'
 import BaseHeader from '../partials/BaseHeader'
 import BaseFooter from '../partials/BaseFooter'
@@ -5,6 +7,25 @@ import { Link } from 'react-router-dom'
 
 
 function ForgotPassword() {
+  const [email,setEmail]=useState("")
+  const [isLoading,setIsLoading]=useState(false)
+
+  const handleEmailSubmit= async (e) => {
+    e.preventDefault();
+    setIsLoading(true)
+    try{
+    await apiInstance.get(`user/password-reset/${email}/`).then((res) => {
+      console.log(res.data);
+      setIsLoading(false);
+      alert("Password Reset Email Sent");
+    });
+    }catch(error){
+      console.log("error : ",error);
+      setIsLoading(false);
+
+    }
+  }
+
   return (
     <>
       <BaseHeader />
@@ -20,7 +41,7 @@ function ForgotPassword() {
                     Let's help you get back into your account
                   </span>
                 </div>
-                <form className="needs-validation" noValidate="">
+                <form className="needs-validation" noValidate="" onSubmit={handleEmailSubmit}>
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">Email Address</label>
                     <input
@@ -29,15 +50,22 @@ function ForgotPassword() {
                       className="form-control"
                       name="email"
                       placeholder="johndoe@gmail.com"
-                      required=""
+                      required
+                      onChange={(e) => setEmail(e.target.value)}
+
                     />
                   </div>
 
                   <div>
                     <div className="d-grid">
-                      <button type="submit" className="btn btn-primary">
-                        Reset Password <i className='fas fa-arrow-right'></i>
-                      </button>
+                      {isLoading === true && 
+                      (<button disabled type="submit" className="btn btn-primary">
+                      Processing <i className='fas fa-spinner fa-spin'></i>
+                    </button>)}
+                    {isLoading === false && 
+                      (<button type="submit" className="btn btn-primary">
+                      Reset Password <i className='fas fa-arrow-right'></i>
+                    </button>)}
                     </div>
                   </div>
                 </form>
@@ -49,7 +77,7 @@ function ForgotPassword() {
 
       <BaseFooter />
     </>
-  )
+  );
 }
 
 export default ForgotPassword
