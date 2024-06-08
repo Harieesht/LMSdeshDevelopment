@@ -1,9 +1,57 @@
-import React from 'react'
+import { useState,useEffect } from 'react'
+import apiInstance from '../../utils/axios'
 import BaseHeader from '../partials/BaseHeader'
 import BaseFooter from '../partials/BaseFooter'
-
+import { useNavigate,useSearchParams} from 'react-router-dom'
 
 function CreateNewPassword() {
+  const [password,setPassword]=useState("")
+  const [confirmpassword,setConfirmPassword]=useState("")
+  const [isLoading,setIsLoading]=useState(false)
+
+  const navigate = useNavigate()
+  const [searchParam]=useSearchParams()
+
+  const otp=searchParam.get('otp')
+  const uuidb64=searchParam.get('uuidb64')
+  const refresh_token=searchParam.get('refresh_token')
+
+  console.log(otp,uuidb64,refresh_token)
+
+  const handleCreatePassword = async (e) => {
+    e.preventDefault()
+    setIsLoading(true);   
+    if (confirmpassword !== password){
+       
+      alert("Passwords does not match ")
+      return ;
+    }else{
+
+      const formdata=new FormData()
+      formdata.append("password",password);
+      formdata.append("otp",otp);
+      formdata.append("uuidb64",uuidb64);
+      formdata.append("refresh_token",refresh_token);
+      try {
+        await apiInstance.post(`user/password-change/`,formdata).then((res) => {
+          
+          console.log(res.data);
+          alert(res.data.message);
+          setIsLoading(false)
+          navigate("/login/")
+      })
+      } catch (error) {
+        console.log(error)
+        setIsLoading(false)
+      }
+      
+
+
+      
+    }
+
+    console.log("Password Created")
+  }
   return (
     <>
       <BaseHeader />
@@ -19,7 +67,7 @@ function CreateNewPassword() {
                     Choose a new password for your account
                   </span>
                 </div>
-                <form className="needs-validation" noValidate="">
+                <form className="needs-validation" noValidate="" onSubmit={handleCreatePassword}>
                   <div className="mb-3">
                     <label htmlFor="password" className="form-label">
                       Enter New Password
@@ -31,6 +79,7 @@ function CreateNewPassword() {
                       name="password"
                       placeholder="**************"
                       required=""
+                      onChange={(e)=>{setPassword(e.target.value)}}
                     />
                     <div className="invalid-feedback">
                       Please enter valid password.
@@ -49,6 +98,7 @@ function CreateNewPassword() {
                       name="password"
                       placeholder="**************"
                       required=""
+                      onChange={(e)=>{setConfirmPassword(e.target.value)}}
                     />
                     <div className="invalid-feedback">
                       Please enter valid password.
@@ -59,9 +109,17 @@ function CreateNewPassword() {
 
                   <div>
                     <div className="d-grid">
+                    {isLoading === false && (
                       <button type="submit" className="btn btn-primary">
-                        Save New Password <i className='fas fa-check-circle'></i>
+                      Save New Password <i className='fas fa-check-circle'></i>
                       </button>
+                      )}
+                    {isLoading === true && (
+                      <button disabled type="submit" className="btn btn-primary">
+                      Processing <i className='fas fa-spinner fa-spin'></i>
+                      </button>
+                      )}
+
                     </div>
                   </div>
                 </form>
